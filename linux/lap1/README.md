@@ -1,6 +1,6 @@
 # README: Configuring Sudo Privileges and Installing Nginx on Red Hat
 
-## Steps to Achieve the Goal:
+## Steps 
 
 ### 1. Create a New Group
 Run the following command to create a new group named `devgroup`:
