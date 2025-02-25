@@ -49,9 +49,6 @@ This script checks the availability of servers in a given subnet by pinging each
    ./ping_servers.sh > results.txt
    ```
 
-## Example Output
-- Reachable: `Server 172.16.17.1 is up and running`
-- Unreachable: `Server 172.16.17.2 is unreachable`
 
 
 
