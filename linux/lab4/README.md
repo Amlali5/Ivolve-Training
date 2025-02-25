@@ -1,4 +1,4 @@
-# Red Hat LVM Management
+# Disk Management and Logical Volume Setup
 
 This document outlines the steps to manage Logical Volume Management (LVM) on a Red Hat system.
 
