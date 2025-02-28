@@ -1,4 +1,4 @@
-# Lab 12: Launching an EC2 Instance
+#  Launching an EC2 Instance
 ## Steps
 
 ### 1. Create a VPC
