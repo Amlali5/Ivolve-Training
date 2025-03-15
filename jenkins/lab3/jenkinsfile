@@ -1,0 +1,91 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') 
+        DOCKER_IMAGE_NAME = "aml51/my-image"
+        DOCKER_IMAGE_TAG = "latest"
+        KUBE_DEPLOYMENT_FILE = "/var/jenkins_home/workspace/Ivolve-Training/jenkins/lab3/deployment.yaml" 
+        K8S_TOKEN = credentials('kube-config')
+    }
+
+    stages {
+        // Stage 1: Clone the GitHub repository
+        stage('Clone GitHub Repository') {
+            steps {
+                git url: 'https://Amlali5:aml@github.com/Amlali5/Ivolve-Training.git', branch: 'main'
+
+            }
+        }
+
+        // Stage 2: Build Docker image
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} /var/jenkins_home/workspace/Ivolve-Training/jenkins/lab3/"
+                }
+            }
+        }
+
+        // Stage 3: Push Docker image to Docker Hub
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_HUB_USER', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                        sh """
+                            echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USER} --password-stdin
+                            docker push ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+                        """
+                    }
+                }
+            }
+        }
+
+        // Stage 4: Delete Docker image locally
+        stage('Delete Local Docker Image') {
+            steps {
+                script {
+                    sh "docker rmi ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} || true"
+                }
+            }
+        }
+
+        // Stage 5: Update Kubernetes deployment with the new image
+        stage('Update Kubernetes Deployment') {
+            steps {
+                script {
+                    sh """
+                        sed -i "s|image: .*|image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|g" ${KUBE_DEPLOYMENT_FILE}
+                    """
+                }
+            }
+        }
+
+        // Stage 6: Deploy to Kubernetes (Minikube)
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh """
+                        kubectl config set-cluster minikube --server=https://192.168.49.2:8443 --insecure-skip-tls-verify
+                        kubectl config set-context minikube --cluster=minikube
+                        kubectl config use-context minikube
+                        kubectl apply -f /var/jenkins_home/workspace/Ivolve-Training/jenkins/lab3/deployment.yaml --validate=false
+                     """   
+
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed. Cleaning up...'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
