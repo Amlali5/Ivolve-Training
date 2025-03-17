@@ -2,7 +2,7 @@ FROM nginx:latest
 
 WORKDIR /usr/share/nginx/html
 
-COPY ./static_website/ .
+COPY jenkins/lab3/static_website/ .
 
 EXPOSE 80
 
