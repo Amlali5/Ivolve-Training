@@ -81,26 +81,6 @@ volumes:
   - Allows dynamic provisioning of PVs.
   - Defines the type of storage (e.g., SSD, HDD) and provisioning policies.
 
-## Cleanup
-
-To delete all resources created in this lab, save the following YAML in a file named `cleanup.yaml` and run `kubectl delete -f cleanup.yaml`:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: nginx-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-deployment
-```
 
 
 
