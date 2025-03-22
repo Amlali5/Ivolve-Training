@@ -138,37 +138,6 @@ This lab demonstrates how to deploy an application, update it, and roll back cha
 
 ---
 
-## **Commands Summary**
-
-```bash
-# Apply deployment
-kubectl apply -f nginx-deployment.yaml
-
-# Apply service
-kubectl apply -f nginx-service.yaml
-
-# Port forwarding
-kubectl port-forward svc/nginx 8080:80
-
-# Update image to Apache
-kubectl set image deployment/nginx nginx=httpd:latest
-
-# View rollout history
-kubectl rollout history deployment/nginx
-
-# Roll back to previous version
-kubectl rollout undo deployment/nginx
-
-# Monitor pods
-kubectl get pods -w
-
-# Clean up
-kubectl delete -f nginx-deployment.yaml
-kubectl delete -f nginx-service.yaml
-```
-
----
-
 ## **Expected Results**
 
 - **NGINX Deployment:** Successfully deployed with 3 replicas.
